@@ -1,0 +1,36 @@
+# Use a lightweight and stable Node.js image
+FROM node:18-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Install necessary build tools for Alpine
+RUN apk add --no-cache python3 make g++ cairo pango jpeg giflib pixman
+
+# Copy package.json and package-lock.json first for efficient caching
+COPY package*.json ./
+
+# Set npm registry and clean cache
+RUN npm config set registry https://registry.npmjs.org/ \
+    && npm cache clean --force
+
+# Install dependencies efficiently
+RUN npm ci --only=production
+
+# Copy the rest of the application files
+COPY . .
+
+# Set proper permissions
+RUN chown -R node:node /app
+USER nod# Expose the necessary port
+EXPOSE 4000
+
+# Start the microservice
+CMD ["node", "index.js"]
+
+# Expose the necessary port (change if needed)
+EXPOSE 3001
+
+# Start the microservice using index.js
+CMD ["node", "clientlient.js"]
+

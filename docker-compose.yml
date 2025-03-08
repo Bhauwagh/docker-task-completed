@@ -1,0 +1,42 @@
+version: "3.8"
+
+services:
+  admin:
+    build: ./admin
+    container_name: admin
+    ports:
+      - "4000:4000"
+    environment:
+      - PORT=4000
+    networks:
+      - app-network
+
+  client-steaming:
+    build: ./client-steaming
+    container_name: client-steaming
+    ports:
+      - "3200:3200"
+    environment:
+      - PORT=3200
+    networks:
+      - app-network
+    depends_on:
+      - admin
+
+  clientlient:
+    build: ./clientlient
+    container_name: clientlient
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+    networks:
+      - app-network
+    depends_on:
+      - admin
+      - client-steaming
+
+networks:
+  app-network:
+    driver: bridge
+
